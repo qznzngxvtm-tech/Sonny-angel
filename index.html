@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#F58F7C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mes Sonny Angel">
+<title>Mes Sonny Angel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFF7F3; --bg2:#FFEFE9;
+    --card:#FFFFFF;
+    --ink:#4A3B38; --ink-soft:#9B8B86; --ink-faint:#C7B8B3;
+    --coral:#F58F7C; --coral-deep:#E97058; --coral-soft:#FCD9CF;
+    --plum:#C98BB9; --sky:#7FB5D6; --gold:#E0A95E; --sage:#8FC0A0; --lav:#A99BD4;
+    --gold-soft:#FBEFD6;
+    --line:#F2E2DB;
+    --shadow:0 6px 22px rgba(216,140,120,.16);
+    --shadow-sm:0 3px 10px rgba(216,140,120,.13);
+    --r:22px; --r-sm:14px;
+    --disp:"Baloo 2", ui-rounded, "Hiragino Maru Gothic ProN", system-ui, sans-serif;
+    --body:"Nunito", ui-rounded, system-ui, -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--body); color:var(--ink);
+    background:linear-gradient(180deg,var(--bg) 0%, var(--bg2) 100%);
+    background-attachment:fixed; min-height:100vh;
+    padding-bottom:env(safe-area-inset-bottom);
+    overscroll-behavior-y:none;
+  }
+  h1,h2,h3{font-family:var(--disp); margin:0; font-weight:700; letter-spacing:.2px}
+  button{font-family:var(--body); cursor:pointer; border:none; background:none; color:inherit}
+  input,textarea,select{font-family:var(--body)}
+
+  /* ---- top bar ---- */
+  header{
+    position:sticky; top:0; z-index:30;
+    padding:calc(env(safe-area-inset-top) + 16px) 18px 12px;
+    background:linear-gradient(180deg, rgba(255,247,243,.97), rgba(255,247,243,.86));
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex; align-items:center; gap:10px; justify-content:space-between}
+  .title{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap}
+  .title h1{font-size:24px; font-weight:800; color:var(--ink)}
+  .title .sub{font-size:12.5px; color:var(--ink-soft); font-weight:600}
+  .menu-btn{width:40px;height:40px;border-radius:50%;background:var(--card);
+    box-shadow:var(--shadow-sm); font-size:18px; display:grid; place-items:center; color:var(--coral-deep)}
+  .menu-btn:active{transform:scale(.94)}
+
+  /* ---- global progress ---- */
+  .gstat{margin-top:12px; background:var(--card); border-radius:var(--r);
+    box-shadow:var(--shadow); padding:14px 16px}
+  .gstat .row{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:9px}
+  .gstat .big{font-family:var(--disp); font-weight:800; font-size:21px; color:var(--coral-deep); line-height:1}
+  .gstat .big small{font-size:13px; color:var(--ink-soft); font-weight:700}
+  .gstat .right{font-size:12px; color:var(--ink-soft); font-weight:700; text-align:right}
+  .bar{height:11px; border-radius:99px; background:var(--coral-soft); overflow:hidden}
+  .bar>span{display:block; height:100%; border-radius:99px;
+    background:linear-gradient(90deg,var(--coral),var(--gold)); transition:width .5s cubic-bezier(.2,.8,.2,1)}
+
+  /* ---- controls ---- */
+  .controls{padding:12px 14px 4px; position:sticky; top:0; z-index:10}
+  .search{display:flex; align-items:center; gap:9px; background:var(--card);
+    border-radius:99px; box-shadow:var(--shadow-sm); padding:11px 16px}
+  .search input{border:none; outline:none; background:none; width:100%; font-size:16px; color:var(--ink)}
+  .search input::placeholder{color:var(--ink-faint)}
+  .search .ico{color:var(--coral); font-size:16px}
+  .chips{display:flex; gap:8px; overflow-x:auto; padding:11px 2px 3px; scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{white-space:nowrap; padding:8px 14px; border-radius:99px; font-size:13px; font-weight:700;
+    background:var(--card); color:var(--ink-soft); box-shadow:var(--shadow-sm); border:1.5px solid transparent}
+  .chip[data-on="1"]{background:var(--coral); color:#fff; box-shadow:var(--shadow)}
+  .chip:active{transform:scale(.96)}
+  .sortrow{display:flex; justify-content:space-between; align-items:center; padding:4px 4px 0}
+  .sortrow .count{font-size:12px; color:var(--ink-soft); font-weight:700}
+  .sortsel{font-size:12.5px; font-weight:700; color:var(--coral-deep); background:none;
+    border:none; padding:6px 4px}
+
+  /* ---- list ---- */
+  main{padding:6px 14px 90px}
+  .card{background:var(--card); border-radius:var(--r); box-shadow:var(--shadow-sm);
+    padding:14px 15px; margin-bottom:12px; display:flex; align-items:center; gap:13px;
+    border:1.5px solid transparent; transition:transform .12s, box-shadow .2s}
+  .card:active{transform:scale(.985)}
+  .card[data-done="1"]{border-color:var(--gold); background:linear-gradient(180deg,#fff,var(--gold-soft))}
+  .ring{position:relative; width:50px; height:50px; flex:0 0 50px}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .pct{position:absolute; inset:0; display:grid; place-items:center;
+    font-family:var(--disp); font-weight:800; font-size:13px; color:var(--coral-deep)}
+  .card[data-done="1"] .pct{color:var(--gold)}
+  .cmeta{flex:1; min-width:0}
+  .cname{font-family:var(--disp); font-weight:700; font-size:16px; color:var(--ink);
+    line-height:1.18; display:flex; align-items:center; gap:7px}
+  .cname .star{font-size:13px}
+  .ctags{display:flex; align-items:center; gap:7px; margin-top:5px; flex-wrap:wrap}
+  .gtag{font-size:10.5px; font-weight:800; padding:3px 9px; border-radius:99px; letter-spacing:.3px}
+  .cyear{font-size:11.5px; color:var(--ink-faint); font-weight:700}
+  .cfrac{font-size:12.5px; color:var(--ink-soft); font-weight:800}
+  .chev{color:var(--ink-faint); font-size:20px; flex:0 0 auto}
+  .boxthumb{position:relative; width:56px; height:56px; flex:0 0 56px}
+  .boxthumb svg{width:56px; height:56px; display:block}
+  .boxthumb .bemo{position:absolute; left:0; right:0; top:61%; transform:translateY(-50%);
+    text-align:center; font-size:18px; line-height:1}
+  .boxthumb .bdone{position:absolute; right:-2px; top:-3px; width:19px;height:19px;border-radius:50%;
+    background:#E0A95E; color:#fff; font-size:11px; display:grid; place-items:center; box-shadow:var(--shadow-sm)}
+  .cbar{height:8px; border-radius:99px; background:#FCD9CF; overflow:hidden; margin-top:9px}
+  .cbar>span{display:block; height:100%; border-radius:99px;
+    background:linear-gradient(90deg,#F58F7C,#E0A95E); transition:width .4s}
+  .card[data-done="1"] .cbar>span{background:#E0A95E}
+  .boximg{width:56px;height:56px;border-radius:14px;object-fit:cover;display:block;box-shadow:var(--shadow-sm)}
+  .figimg{width:38px;height:38px;border-radius:11px;object-fit:cover;display:block}
+  .favatar.hasimg{background:none;padding:0;overflow:hidden}
+  .favatar .mag{font-size:9px}
+  .lightbox{position:fixed; inset:0; z-index:80; background:rgba(40,28,26,.86);
+    display:none; align-items:center; justify-content:center; padding:24px; backdrop-filter:blur(4px)}
+  .lightbox[data-on="1"]{display:flex}
+  .lightbox img{max-width:94%; max-height:84%; border-radius:18px; box-shadow:0 14px 50px rgba(0,0,0,.5)}
+  .lightbox .lbx{position:absolute; top:calc(env(safe-area-inset-top) + 14px); right:16px;
+    width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--ink);font-size:17px;
+    display:grid;place-items:center;box-shadow:var(--shadow)}
+
+  .ghead{font-family:var(--disp); font-weight:800; font-size:13px; letter-spacing:1px;
+    text-transform:uppercase; color:var(--ink-soft); margin:16px 4px 9px; display:flex; gap:8px; align-items:center}
+  .ghead .ln{flex:1; height:1.5px; background:var(--line); border-radius:2px}
+
+  .empty{text-align:center; color:var(--ink-soft); padding:54px 24px}
+  .empty .e{font-size:42px; margin-bottom:8px}
+  .empty p{font-weight:600; line-height:1.5}
+
+  /* ---- FAB ---- */
+  .fab{position:fixed; right:18px; bottom:calc(20px + env(safe-area-inset-bottom)); z-index:25;
+    width:56px;height:56px;border-radius:50%;
+    background:linear-gradient(135deg,var(--coral),var(--coral-deep)); color:#fff;
+    font-size:28px; font-weight:700; display:grid; place-items:center;
+    box-shadow:0 10px 24px rgba(233,112,88,.45)}
+  .fab:active{transform:scale(.92)}
+
+  /* ---- sheet / modal ---- */
+  .scrim{position:fixed; inset:0; background:rgba(74,59,56,.42); z-index:40;
+    opacity:0; pointer-events:none; transition:opacity .25s; backdrop-filter:blur(2px)}
+  .scrim[data-open="1"]{opacity:1; pointer-events:auto}
+  .sheet{position:fixed; left:0; right:0; bottom:0; z-index:50;
+    background:var(--bg); border-radius:26px 26px 0 0; box-shadow:0 -10px 40px rgba(74,59,56,.2);
+    max-height:92vh; display:flex; flex-direction:column;
+    transform:translateY(102%); transition:transform .3s cubic-bezier(.2,.8,.2,1);
+    padding-bottom:env(safe-area-inset-bottom)}
+  .sheet[data-open="1"]{transform:translateY(0)}
+  .grip{width:42px;height:5px;border-radius:99px;background:var(--ink-faint);
+    margin:10px auto 4px; flex:0 0 auto}
+  .shead{padding:6px 18px 12px; border-bottom:1px solid var(--line); flex:0 0 auto}
+  .shead .top{display:flex; align-items:flex-start; gap:10px; justify-content:space-between}
+  .shead h2{font-size:21px; font-weight:800; color:var(--ink); line-height:1.15; flex:1}
+  .shead .x{width:34px;height:34px;border-radius:50%;background:var(--card);
+    box-shadow:var(--shadow-sm); font-size:16px; color:var(--ink-soft); flex:0 0 auto}
+  .shead .meta{display:flex; align-items:center; gap:9px; margin-top:9px; flex-wrap:wrap}
+  .shead .pbar{height:9px; border-radius:99px; background:var(--coral-soft); overflow:hidden; flex:1; min-width:120px}
+  .shead .pbar>span{display:block;height:100%;border-radius:99px;
+    background:linear-gradient(90deg,var(--coral),var(--gold)); transition:width .4s}
+  .shead .frac{font-size:13px; font-weight:800; color:var(--coral-deep)}
+  .sbody{overflow-y:auto; padding:8px 14px 18px; -webkit-overflow-scrolling:touch}
+
+  /* figure row */
+  .fig{display:flex; align-items:center; gap:13px; padding:12px 12px;
+    background:var(--card); border-radius:var(--r-sm); box-shadow:var(--shadow-sm);
+    margin-bottom:9px; border:1.5px solid transparent}
+  .fig[data-own="1"]{border-color:var(--coral-soft); background:linear-gradient(180deg,#fff,#FFF6F2)}
+  .fig[data-special="1"]{background:linear-gradient(180deg,#fff,var(--gold-soft))}
+  .check{width:30px;height:30px;border-radius:50%; flex:0 0 30px;
+    border:2.5px solid var(--coral-soft); background:#fff; display:grid; place-items:center;
+    font-size:16px; color:#fff; transition:all .15s}
+  .fig[data-own="1"] .check{background:var(--coral); border-color:var(--coral)}
+  .fig[data-special="1"] .check{border-color:var(--gold)}
+  .fig[data-special="1"][data-own="1"] .check{background:var(--gold)}
+  .check:active{transform:scale(.85)}
+  .fname{flex:1; font-size:15.5px; font-weight:700; color:var(--ink); line-height:1.25}
+  .fig[data-own="1"] .fname{color:var(--coral-deep)}
+  .fname .ph{color:var(--ink-faint); font-weight:600; font-style:italic}
+  .fedit{width:32px;height:32px;border-radius:50%; flex:0 0 auto;
+    color:var(--ink-faint); font-size:15px; display:grid; place-items:center}
+  .fedit:active{background:var(--bg2)}
+  .favatar{width:38px;height:38px;border-radius:12px; flex:0 0 38px; display:grid; place-items:center;
+    font-size:21px; background:var(--bg2); position:relative}
+  .fig[data-special="1"] .favatar{background:var(--gold-soft)}
+  .favatar.linked:active{transform:scale(.9)}
+  .favatar .mag{position:absolute; right:-3px; bottom:-3px; width:16px;height:16px;border-radius:50%;
+    background:var(--coral); color:#fff; font-size:9px; display:grid; place-items:center; box-shadow:var(--shadow-sm)}
+  .favatar.ph{font-size:15px; color:var(--ink-faint)}
+
+  .sbody .tools{display:flex; gap:9px; margin:4px 0 14px; flex-wrap:wrap}
+  .tbtn{flex:1; min-width:130px; padding:11px; border-radius:var(--r-sm); font-size:13.5px; font-weight:800;
+    background:var(--card); color:var(--coral-deep); box-shadow:var(--shadow-sm);
+    display:flex; align-items:center; justify-content:center; gap:7px; border:1.5px solid var(--coral-soft)}
+  .tbtn:active{transform:scale(.97)}
+  .tbtn.warn{color:#C2615A; border-color:#F3D2CC}
+
+  .hint{font-size:12px; color:var(--ink-soft); line-height:1.5; background:var(--card);
+    border-radius:var(--r-sm); padding:11px 13px; margin-bottom:13px; box-shadow:var(--shadow-sm)}
+  .hint b{color:var(--coral-deep)}
+
+  /* form sheet */
+  .field{margin-bottom:14px}
+  .field label{display:block; font-size:12.5px; font-weight:800; color:var(--ink-soft); margin:0 0 6px 4px; letter-spacing:.3px}
+  .field input,.field textarea,.field select{width:100%; padding:13px 15px; border-radius:var(--r-sm);
+    border:1.8px solid var(--line); background:var(--card); font-size:16px; color:var(--ink); outline:none}
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--coral)}
+  .field textarea{min-height:140px; resize:vertical; line-height:1.5}
+  .primary{width:100%; padding:15px; border-radius:99px; font-size:16px; font-weight:800; color:#fff;
+    background:linear-gradient(135deg,var(--coral),var(--coral-deep));
+    box-shadow:0 8px 20px rgba(233,112,88,.38); margin-top:4px}
+  .primary:active{transform:scale(.98)}
+  .ghost{width:100%; padding:13px; border-radius:99px; font-size:14.5px; font-weight:800;
+    color:var(--ink-soft); margin-top:8px}
+
+  .mlist{padding:6px 4px}
+  .mrow{display:flex; align-items:center; gap:13px; padding:15px 14px; background:var(--card);
+    border-radius:var(--r-sm); box-shadow:var(--shadow-sm); margin-bottom:9px; font-size:15px; font-weight:700}
+  .mrow .mi{font-size:19px; width:26px; text-align:center}
+  .mrow:active{transform:scale(.98)}
+  .mrow.warn{color:#C2615A}
+
+  /* confetti */
+  .confetti{position:fixed; inset:0; pointer-events:none; z-index:60; overflow:hidden}
+  .cf{position:absolute; font-size:20px; will-change:transform,opacity; animation:fall 1.5s ease-in forwards}
+  @keyframes fall{
+    0%{transform:translateY(-30px) rotate(0); opacity:1}
+    100%{transform:translateY(105vh) rotate(540deg); opacity:0}
+  }
+  .toast{position:fixed; left:50%; bottom:calc(90px + env(safe-area-inset-bottom)); transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:#fff; padding:11px 20px; border-radius:99px; font-size:14px; font-weight:700;
+    box-shadow:0 8px 24px rgba(74,59,56,.35); z-index:70; opacity:0; transition:all .3s; pointer-events:none}
+  .toast[data-on="1"]{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  @media(prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="title">
+      <h1>Mes Sonny Angel</h1>
+      <span class="sub">✨ coche celles que tu as</span>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu">⋯</button>
+  </div>
+  <div class="gstat">
+    <div class="row">
+      <div class="big"><span id="gOwned">0</span><small> / <span id="gTotal">0</span> figurines</small></div>
+      <div class="right"><span id="gDone">0</span> collections complètes<br><span id="gColTotal">0</span> séries au total</div>
+    </div>
+    <div class="bar"><span id="gBar" style="width:0%"></span></div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="search">
+    <span class="ico">⌕</span>
+    <input id="search" type="search" placeholder="Rechercher une série ou une figurine…" autocomplete="off">
+  </div>
+  <div class="chips" id="chips"></div>
+  <div class="sortrow">
+    <span class="count" id="resCount"></span>
+    <select class="sortsel" id="sort">
+      <option value="prog">Trier : progression</option>
+      <option value="name">Trier : nom (A→Z)</option>
+      <option value="year">Trier : année (récent)</option>
+      <option value="yearold">Trier : année (ancien)</option>
+    </select>
+  </div>
+</div>
+
+<main id="list"></main>
+
+<button class="fab" id="addCol" aria-label="Ajouter une collection">＋</button>
+
+<!-- scrim + sheets -->
+<div class="scrim" id="scrim"></div>
+
+<div class="sheet" id="detail">
+  <div class="grip"></div>
+  <div class="shead">
+    <div class="top"><h2 id="dTitle">—</h2><button class="x" data-close>✕</button></div>
+    <div class="meta">
+      <span class="pbar"><span id="dBar" style="width:0%"></span></span>
+      <span class="frac" id="dFrac">0 / 0</span>
+    </div>
+  </div>
+  <div class="sbody" id="dBody"></div>
+</div>
+
+<div class="sheet" id="form">
+  <div class="grip"></div>
+  <div class="shead"><div class="top"><h2 id="fTitle">—</h2><button class="x" data-close>✕</button></div></div>
+  <div class="sbody" id="fBody"></div>
+</div>
+
+<div class="sheet" id="menu">
+  <div class="grip"></div>
+  <div class="shead"><div class="top"><h2>Réglages</h2><button class="x" data-close>✕</button></div></div>
+  <div class="sbody">
+    <div class="mlist">
+      <div class="mrow" id="mExport"><span class="mi">⬇️</span> Exporter une sauvegarde (.json)</div>
+      <div class="mrow" id="mImport"><span class="mi">⬆️</span> Importer une sauvegarde</div>
+      <div class="mrow warn" id="mReset"><span class="mi">↺</span> Tout réinitialiser</div>
+    </div>
+    <p class="hint" style="margin-top:6px">Tes coches sont enregistrées <b>sur cet appareil</b>. Pense à exporter une sauvegarde de temps en temps. Tu peux héberger ce fichier sur GitHub Pages et l'« Ajouter à l'écran d'accueil » pour l'utiliser comme une appli.</p>
+    <input type="file" id="importFile" accept="application/json" hidden>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox"><button class="lbx" id="lbClose">✕</button><img id="lbImg" src="" alt="photo"></div>
+<div class="confetti" id="confetti"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* ============ SEEDED FIGURE LISTS (vrais noms, sources Coleka) ============ */
+const SEED = {
+  "animal-1":["Box","Cheetah","Cock","Crocodile","Dalmatian","Elephant","Frog","Koala","Lion","Monkey","Panda","Rabbit","Tiger","Robby","Secret"],
+  "animal-2":["Box","Cow","Fawn","Giraffe","Lesser Panda","Mouse","Parakeet","Pig","Reindeer","Rhinoceros","Sheep","Uribou","White Bear","Robby","Secret"],
+  "animal-3":["Alpaca","Box","Buffalo","Cat (American Shorthair)","Chameleon","Duckbill","French Bulldog","Gorilla","Hippopotamus","Lop Ear Rabbit","Owl","Parrot","Zebra","Robby","Secret"],
+  "animal-4":["Box","Calico Cat","Chihuahua","Dragon","Duck","Goat","Hamadryas Baboon","Horse","Japanese Crane","Mongoose","Peacock","Shiba Inu","Skunk","Snake","Robby"],
+  "marine":["Blowfish","Box","Clownfish","Dolphin","Jellyfish","Penguin","Ray","Sea Horse","Seal","Shark","Shell","Starfish","Whale","Robby","Secret"],
+  "fruits":["Apple","Box","Chestnut","Grapes","Lemon","Mangosteen","Melon","Peach","Pear","Persimmon","Pineapple","Strawberry","Watermelon","Robby","Secret"],
+  "vegetables":["Bamboo Shoot","Box","Cabbage","Carrot","Corn","Eggplant","Japanese Ginger","Japanese Radish","Onion","Chili Pepper","Radish","Sweet Potato","Tomato","Robby","Secret"],
+  "flowers":["Acorn","Box","Cactus","Carnation","Cherry Blossom","Dandelion","Hydrangea","Lily Bell","Morning Glory","Pansy","Poppy","Rose","Tulip","Robby","Secret"],
+  "sweets":["Box","Candy","Cookie","Cream Puff","Cupcake","Fruit Tart","Ice Cream","Jelly Beans","Konpeito","Pancake","Popcorn","Pudding","Strawberry Shortcake","Secret"]
+};
+
+/* ============ EMOJI par figurine (repère visuel offline) ============ */
+const EMOJI={
+  // Animal 1
+  "Box":"📦","Cheetah":"🐆","Cock":"🐓","Crocodile":"🐊","Dalmatian":"🐶","Elephant":"🐘",
+  "Frog":"🐸","Koala":"🐨","Lion":"🦁","Monkey":"🐵","Panda":"🐼","Rabbit":"🐰","Tiger":"🐯",
+  // Animal 2
+  "Cow":"🐄","Fawn":"🦌","Giraffe":"🦒","Lesser Panda":"🐾","Mouse":"🐭","Parakeet":"🦜","Pig":"🐷",
+  "Reindeer":"🦌","Rhinoceros":"🦏","Sheep":"🐑","Uribou":"🐗","White Bear":"🐻‍❄️",
+  // Animal 3
+  "Alpaca":"🦙","Buffalo":"🐃","Cat (American Shorthair)":"🐱","Chameleon":"🦎","Duckbill":"🦫",
+  "French Bulldog":"🐶","Gorilla":"🦍","Hippopotamus":"🦛","Lop Ear Rabbit":"🐰","Owl":"🦉","Parrot":"🦜","Zebra":"🦓",
+  // Animal 4
+  "Calico Cat":"🐈","Chihuahua":"🐶","Dragon":"🐉","Duck":"🦆","Goat":"🐐","Hamadryas Baboon":"🐒",
+  "Horse":"🐴","Japanese Crane":"🕊️","Mongoose":"🐾","Peacock":"🦚","Shiba Inu":"🐕","Skunk":"🦨","Snake":"🐍",
+  // Marine
+  "Blowfish":"🐡","Clownfish":"🐠","Dolphin":"🐬","Jellyfish":"🪼","Penguin":"🐧","Ray":"🐟",
+  "Sea Horse":"🐠","Seal":"🦭","Shark":"🦈","Shell":"🐚","Starfish":"⭐","Whale":"🐳",
+  // Fruits
+  "Apple":"🍎","Chestnut":"🌰","Grapes":"🍇","Lemon":"🍋","Mangosteen":"🟣","Melon":"🍈","Peach":"🍑",
+  "Pear":"🍐","Persimmon":"🟠","Pineapple":"🍍","Strawberry":"🍓","Watermelon":"🍉",
+  // Vegetables
+  "Bamboo Shoot":"🎋","Cabbage":"🥬","Carrot":"🥕","Corn":"🌽","Eggplant":"🍆","Japanese Ginger":"🫚",
+  "Japanese Radish":"🥬","Onion":"🧅","Chili Pepper":"🌶️","Radish":"🌱","Sweet Potato":"🍠","Tomato":"🍅",
+  // Flowers
+  "Acorn":"🌰","Cactus":"🌵","Carnation":"🌸","Cherry Blossom":"🌸","Dandelion":"🌼","Hydrangea":"💠",
+  "Lily Bell":"🔔","Morning Glory":"🌺","Pansy":"🌸","Poppy":"🌺","Rose":"🌹","Tulip":"🌷",
+  // Sweets
+  "Candy":"🍬","Cookie":"🍪","Cream Puff":"🧁","Cupcake":"🧁","Fruit Tart":"🥧","Ice Cream":"🍦",
+  "Jelly Beans":"🫘","Konpeito":"🍬","Pancake":"🥞","Popcorn":"🍿","Pudding":"🍮","Strawberry Shortcake":"🍰"
+};
+function emojiFor(name){
+  if(!name||!name.trim()) return "";
+  const n=name.trim();
+  if(/^robby/i.test(n)) return "✨";
+  if(/^secret/i.test(n)) return "🎁";
+  return EMOJI[n] || "🎀";
+}
+
+/* ============ TOUTES LES SÉRIES  [id, nom, année, nombre, groupe, seedKey?] ============
+   groupes : R=Régulières  S=Saisonnières  H=Hippers  C=Collabs & limitées  A=Autres */
+const COLLECTIONS = [
+  ["animal-1","Animal Series 01","2006",15,"R","animal-1"],
+  ["animal-2","Animal Series 02","2006",15,"R","animal-2"],
+  ["animal-3","Animal Series 03","2010",15,"R","animal-3"],
+  ["animal-4","Animal Series 04","2012",15,"R","animal-4"],
+  ["animal-1r","Animal Series 01 (REFINE)","2018",14,"R"],
+  ["animal-2r","Animal Series 02 (REFINE)","2018",14,"R"],
+  ["animal-3r","Animal Series 03 (REFINE)","2018",14,"R"],
+  ["animal-4r","Animal Series 04 (REFINE)","2018",15,"R"],
+  ["marine","Marine","2009",15,"R","marine"],
+  ["marine-r","Marine (REFINE)","2019",14,"R"],
+  ["fruits","Fruits","2006",15,"R","fruits"],
+  ["fruits-r","Fruits (REFINE)","2019",14,"R"],
+  ["veg","Vegetables","2007",15,"R","vegetables"],
+  ["veg-r","Vegetables (REFINE)","2019",14,"R"],
+  ["flowers","Flowers","2013",15,"R","flowers"],
+  ["flowers-r","Flowers (REFINE)","2019",14,"R"],
+  ["sweets","Sweets","2017",14,"R","sweets"],
+  ["sweets-r","Sweets (REFINE)","2019",14,"R"],
+  ["crown","Crown","2007",15,"R"],
+  ["a1-sc","Animal Series 01 Special Color","2012",13,"R"],
+  ["a2-sc","Animal Series 02 Special Color","2014",13,"R"],
+  ["a3-sc","Animal Series 03 Special Color","2018",14,"R"],
+  ["snack","Snack Series","2025",15,"R"],
+  ["dogtime","Dog Time","2024",15,"R"],
+  ["catlife","Cat Life","2023",14,"R"],
+  ["dino","Dinosaur Series","2024",8,"R"],
+  ["creatures","Creatures Series","2022",13,"R"],
+  ["bugs","Bug's World","2022",8,"R"],
+  ["cactus","Cactus","2020",10,"R"],
+  ["homesweet","Home Sweet Home","2024",9,"R"],
+  ["rainy","I Love Rainy Day","2025",9,"R"],
+  ["candystore","Candy Store","2023",7,"R"],
+  ["bananas","It's a Bananas","2023",3,"R"],
+  ["afternoon","Afternoon Tea","2023",4,"R"],
+  ["lovemusic","Love the Music","2022",5,"R"],
+  ["enjoy","Enjoy the Moment","2022",8,"R"],
+  ["colddrinks","Refreshing Cold Drinks","2022",5,"R"],
+  ["circus22","Circus Series – Join the Circus","2022",8,"R"],
+  ["circus19","Circus Series","2019",8,"R"],
+  ["townmus","Town Musicians","2021",7,"R"],
+  ["space","In Space Adventure","2020",8,"R"],
+  ["wonderland","In Wonderland","2020",8,"R"],
+  ["sky17","Sky Color","2017",9,"R"],
+  ["sky20","Sky Color 2020","2020",8,"R"],
+
+  ["hip-sakura","Hippers – Cherry Blossom","2026",13,"H"],
+  ["hip-lookback","Hippers – Looking Back","2024",13,"H"],
+  ["hip-dream","Hippers – Dreammind","2022",14,"H"],
+  ["hip-harvest","Hippers – Harvest","2022",14,"H"],
+  ["hip-base","Hippers (1ère série)","2021",14,"H"],
+
+  ["advent25","Advent Calendar 2025","2025",15,"S"],
+  ["xmas25","Christmas 2025","2025",8,"S"],
+  ["xmas24","Christmas 2024","2024",9,"S"],
+  ["xmas23","Christmas 2023","2023",7,"S"],
+  ["xmas22","Christmas 2022","2022",10,"S"],
+  ["xmas21","Christmas 2021","2021",8,"S"],
+  ["xmas20","Christmas 2020","2020",8,"S"],
+  ["xmas19","Christmas 2019","2019",6,"S"],
+  ["xmas18","Christmas 2018","2018",7,"S"],
+  ["xmas17","Christmas 2017","2017",8,"S"],
+  ["xmas16","Christmas 2016","2016",8,"S"],
+  ["xmas15","Christmas 2015","2015",8,"S"],
+  ["xmas14","Christmas 2014","2014",8,"S"],
+  ["xmas13","Christmas 2013","2013",7,"S"],
+  ["xmas12","Christmas 2012","2012",7,"S"],
+  ["xmas11","Christmas 2011","2011",7,"S"],
+  ["xmas10","Christmas 2010","2010",4,"S"],
+  ["xmas09","Christmas 2009","2009",4,"S"],
+  ["xmas08","Christmas 2008","2008",5,"S"],
+  ["xmas07","Christmas 2007","2007",8,"S"],
+  ["xmas06","Christmas 2006","2006",2,"S"],
+  ["xmasorn14","Christmas Ornament 2014","2014",7,"S"],
+  ["winterwon23","Winter Wonderland 2023","2023",11,"S"],
+  ["pumpkin","Pumpkin Patch Series","2025",9,"S"],
+  ["hween22","Halloween 2022","2022",6,"S"],
+  ["hween21","Halloween 2021","2021",8,"S"],
+  ["hween18","Halloween 2018","2018",7,"S"],
+  ["hween16","Halloween 2016","2016",8,"S"],
+  ["hween15","Halloween 2015","2015",8,"S"],
+  ["hween14","Halloween 2014","2014",8,"S"],
+  ["hween12","Halloween 2012","2012",5,"S"],
+  ["hween07","Halloween 2007","2007",5,"S"],
+  ["easter18","Easter 2018","2018",8,"S"],
+  ["easter17","Easter 2017","2017",8,"S"],
+  ["easter16","Easter 2016","2016",8,"S"],
+  ["easter14","Easter 2014","2014",7,"S"],
+  ["easter12","Easter 2012","2012",6,"S"],
+  ["val20","Valentine's Day 2020","2020",6,"S"],
+  ["val19","Valentine's Day 2019","2019",6,"S"],
+  ["val18","Valentine's Day 2018","2018",8,"S"],
+  ["val17","Valentine's Day 2017","2017",8,"S"],
+  ["val09","Valentine's Day","2009",7,"S"],
+  ["valmsg22","Valentine 2022 – Message of Love","2022",8,"S"],
+  ["choco16","Chocolate 2016","2016",8,"S"],
+  ["choco15","Chocolat Valentine's Day 2015","2015",8,"S"],
+  ["choco13","Chocolat Valentine's Day 2013","2013",7,"S"],
+  ["kisskiss","Kiss Kiss Series","2025",7,"S"],
+  ["strawlove","Strawberry Love","2026",8,"S"],
+  ["giftslove","Gifts of Love","2024",11,"S"],
+  ["flowergift","Flower Gift","2023",8,"S"],
+  ["sakura-hanami","Cherry Blossom – Hanami","2025",9,"S"],
+  ["sakura-spring","Cherry Blossom – Peaceful Spring","2022",6,"S"],
+  ["sakura-night","Cherry Blossom – Night Version","2021",6,"S"],
+  ["sakura19","Cherry Blossom 2019","2019",6,"S"],
+  ["harvest21","Harvest Series","2021",5,"S"],
+  ["summer18","Summer 2018","2018",14,"S"],
+  ["summervac17","Summer Vacation","2017",15,"S"],
+  ["summer14","Summer 2014 – Huntington Beach","2014",14,"S"],
+  ["summerfest","Summer Festival Series","2021",5,"S"],
+  ["summerisland","Summer Island Holiday","2022",2,"S"],
+  ["bdaybear","Birthday Gift Bear","2021",8,"S"],
+  ["bday17","Birthday Gift","2017",8,"S"],
+  ["newyear","New Year (toutes années)","2006-2026",25,"S"],
+  ["hny23","Happy New Year 2023","2023",2,"S"],
+  ["hny21","Happy New Year","2021",2,"S"],
+
+  ["artist","Artist Collection","2014-2022",37,"C"],
+  ["artist-diy","My Artist Collection – Kit DIY","2024",10,"C"],
+  ["limited-collab","Limited Edition & Collaborations","2013-2025",59,"C"],
+  ["master","Master Collection","2019-2023",3,"C"],
+  ["photocontest","Photo Contest & Prize Figures","2014-2017",11,"C"],
+  ["newyork","Sonny Angel in New York","2019",7,"C"],
+  ["seoul","Seoul Series","2017",9,"C"],
+  ["okinawa","Okinawa","2017",9,"C"],
+  ["hawaii","Hawaii Beach","2015",15,"C"],
+  ["jeju","Hello Jeju","2022",8,"C"],
+  ["caribbean","Caribbean Sea Collection","2016",9,"C"],
+  ["chinese20","Chinese Series","2020",8,"C"],
+  ["chinesefest","Chinese Festival Series","2018",4,"C"],
+  ["luck23","Japanese Good Luck Series 2023","2023",12,"C"],
+  ["luck21","Japanese Good Luck Series","2021",8,"C"],
+  ["qixi22","Qixi Festival Display Kit","2022",2,"C"],
+  ["qixi20","Qixi Festival Gift","2020",2,"C"],
+  ["luckymeow","Lucky Meow Meow Series","2020",4,"C"],
+  ["luckycat","Lucky Cat Collector's Trophy","2023",2,"C"],
+  ["hfamily","H Family","2020",6,"C"],
+  ["exception","Exception","2020",3,"C"],
+  ["feelgood","Feel So Good","2018",3,"C"],
+  ["sappiness","Sappiness","2021",3,"C"],
+  ["sappiness-love","Sappiness – Love Yourself","2023",2,"C"],
+  ["blackpine","Black Pineapple Series","2022",3,"C"],
+  ["doublemint","Doublemint","—",4,"C"],
+  ["waac22","WAAC","2022",4,"C"],
+  ["waac23","WAAC 2023","2023",4,"C"],
+  ["12th","12th Anniversary","2016",15,"C"],
+  ["11th","11th Anniversary","2015",15,"C"],
+  ["cake15th","15th Anniversary Cake Series","2019",5,"C"],
+  ["nylon15","NYLON 15th Anniversary","2019",2,"C"],
+  ["nylon10","NYLON 10th Anniversary","2014",5,"C"],
+  ["francfranc","Francfranc 20th Anniversary","—",7,"C"],
+  ["loccitane","L'Occitane","2019",4,"C"],
+  ["laduree-xmas","Christmas Ornament Ladurée","2015",8,"C"],
+  ["laduree","Ladurée Patisserie Collection","2014",14,"C"],
+  ["modi15","MODI 2015 Amore Pacific","2015",5,"C"],
+  ["modi14","MODI 2014 Amore Pacific","2014",6,"C"],
+  ["sc16","Special Color 2016","2016",8,"C"],
+  ["sc14","Special Color 2014","2014",8,"C"],
+  ["sc07","Special Color 2007","2007",12,"C"],
+  ["k1300","1300K Version","—",7,"C"],
+
+  ["keychain","Keychain / Strap","2008-2009",45,"A"],
+  ["plush-rabbit","Plush Collection – Cuddly Rabbit","2023",2,"A"],
+  ["plush-bear","Plush Collection – Cuddly Bear","2023",2,"A"],
+  ["pettreats","Pet Treats","2022",2,"A"],
+  ["dashin","Dashin Socks","2021",5,"A"],
+  ["bob-cloud","Bobbing Head – Cloud Style","2021",3,"A"],
+  ["bob-logon","Bobbing Head – Log-On 20th","2019",3,"A"],
+  ["bob-butterfly","Bobbing Head – Butterfly","2018",3,"A"],
+  ["bob-limited","Bobbing Head – Limited Color","2012",6,"A"],
+  ["bob-15","Bobbing Head 2015","2015",3,"A"],
+  ["bob-16","Bobbing Head 2016","2016",3,"A"],
+  ["bob-14","Bobbing Head – Special Color 2014","2014",3,"A"],
+  ["bob-11","Bobbing Head 2011","2011",6,"A"],
+  ["tshirt-strong","T-Shirt – Strong Current","—",12,"A"],
+  ["tshirt-univ","University T-Shirt","—",6,"A"],
+  ["tshirt-aloha","T-Shirt Café – Aloha Surf","2007",12,"A"],
+  ["tshirt-05","T-Shirt 2005","2005",13,"A"]
+];
+
+const GROUPS = {
+  R:{label:"Régulières", color:"#E97058", bg:"#FCD9CF"},
+  S:{label:"Saisonnières", color:"#B05C9F", bg:"#F1DCEC"},
+  H:{label:"Hippers", color:"#3E84AD", bg:"#D6EAF5"},
+  C:{label:"Collabs & limitées", color:"#C08A36", bg:"#FBEFD6"},
+  A:{label:"Autres", color:"#5C9A72", bg:"#DCEEE2"},
+  M:{label:"Mes ajouts", color:"#7A66C0", bg:"#E6E0F5"}
+};
+const GROUP_ORDER = ["R","S","H","C","A","M"];
+
+/* ============ STORAGE (localStorage + secours mémoire) ============ */
+const KEY="sa_tracker_v2";
+let MEM=null;
+const Store={
+  get(){ try{ return localStorage.getItem(KEY); }catch(e){ return MEM; } },
+  set(v){ try{ localStorage.setItem(KEY,v); }catch(e){ MEM=v; } },
+  del(){ try{ localStorage.removeItem(KEY); }catch(e){} MEM=null; }
+};
+
+let DB=null;
+
+/* ============ PHOTOS (stockage séparé : URL ou image compressée) ============ */
+function lsOK(){ try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return true; }catch(e){ return false; } }
+const HAS_LS=lsOK();
+const PKEY="sa_photos_v1"; let PMEM=null; let PH={};
+function loadPhotos(){
+  if(!HAS_LS){ try{ PH=PMEM?JSON.parse(PMEM):{}; }catch(e){ PH={}; } return; }
+  try{ const r=localStorage.getItem(PKEY); PH=r?JSON.parse(r):{}; }catch(e){ PH={}; }
+}
+function savePhotos(){
+  if(!HAS_LS){ PMEM=JSON.stringify(PH); return true; }
+  try{ localStorage.setItem(PKEY, JSON.stringify(PH)); return true; }catch(e){ return false; }
+}
+const Photos={
+  get:k=>PH[k]||null,
+  set:(k,v)=>{ const old=PH[k]; PH[k]=v; if(!savePhotos()){ if(old===undefined) delete PH[k]; else PH[k]=old; savePhotos(); return false; } return true; },
+  del:k=>{ delete PH[k]; savePhotos(); }
+};
+function pkeyBox(id){ return "box:"+id; }
+function pkeyFig(cid,fid){ return "fig:"+cid+":"+fid; }
+function downscale(file,max,q){
+  return new Promise((res,rej)=>{
+    const url=URL.createObjectURL(file); const img=new Image();
+    img.onload=()=>{
+      let w=img.naturalWidth,h=img.naturalHeight;
+      const s=Math.min(1,max/Math.max(w,h)); w=Math.round(w*s); h=Math.round(h*s);
+      const cv=document.createElement("canvas"); cv.width=w; cv.height=h;
+      cv.getContext("2d").drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(url);
+      try{ res(cv.toDataURL("image/jpeg",q)); }catch(e){ rej(e); }
+    };
+    img.onerror=()=>{ URL.revokeObjectURL(url); rej(new Error("img")); };
+    img.src=url;
+  });
+}
+
+function isSpecial(name){ return /^(secret|robby)\b/i.test(name.trim()); }
+
+function buildDefault(){
+  const cols={}; const order=[];
+  for(const [id,name,year,count,group,seed] of COLLECTIONS){
+    let figs;
+    if(seed && SEED[seed]){
+      figs=SEED[seed].map((n,i)=>({id:i+1,name:n,owned:false}));
+    }else{
+      figs=[]; for(let i=1;i<=count;i++) figs.push({id:i,name:"",owned:false});
+    }
+    cols[id]={id,name,year,group,custom:false,figs};
+    order.push(id);
+  }
+  return {v:2,cols,order};
+}
+function load(){
+  const raw=Store.get();
+  if(raw){ try{ const d=JSON.parse(raw); if(d&&d.cols) return d; }catch(e){} }
+  const d=buildDefault(); save(d); return d;
+}
+function save(d){ DB=d||DB; Store.set(JSON.stringify(DB)); }
+
+/* ============ HELPERS ============ */
+const $=s=>document.querySelector(s);
+const el=(t,c)=>{const e=document.createElement(t); if(c)e.className=c; return e;};
+function ownedCount(col){ return col.figs.reduce((a,f)=>a+(f.owned?1:0),0); }
+function figLabel(f,idx){ return f.name && f.name.trim() ? f.name : ("Figurine "+(idx+1)); }
+
+/* ============ STATE UI ============ */
+let filterGroup="ALL";
+let query="";
+let sortMode="prog";
+
+/* ============ RENDER HEADER ============ */
+function renderGlobal(){
+  let owned=0,total=0,done=0;
+  for(const id of DB.order){
+    const c=DB.cols[id]; const o=ownedCount(c);
+    owned+=o; total+=c.figs.length;
+    if(c.figs.length>0 && o===c.figs.length) done++;
+  }
+  $("#gOwned").textContent=owned;
+  $("#gTotal").textContent=total;
+  $("#gDone").textContent=done;
+  $("#gColTotal").textContent=DB.order.length;
+  $("#gBar").style.width=(total? (owned/total*100):0)+"%";
+}
+
+/* ============ CHIPS ============ */
+function renderChips(){
+  const box=$("#chips"); box.innerHTML="";
+  const all=el("button","chip"); all.textContent="Toutes";
+  all.dataset.on=filterGroup==="ALL"?"1":"0";
+  all.onclick=()=>{filterGroup="ALL"; renderChips(); renderList();};
+  box.appendChild(all);
+  for(const g of GROUP_ORDER){
+    if(g==="M" && !DB.order.some(id=>DB.cols[id].group==="M")) continue;
+    const ch=el("button","chip"); ch.textContent=GROUPS[g].label;
+    ch.dataset.on=filterGroup===g?"1":"0";
+    if(filterGroup===g){ ch.style.background=GROUPS[g].color; }
+    ch.onclick=()=>{filterGroup=g; renderChips(); renderList();};
+    box.appendChild(ch);
+  }
+}
+
+/* ============ LIST ============ */
+function passes(col){
+  if(filterGroup!=="ALL" && col.group!==filterGroup) return false;
+  if(query){
+    const q=query.toLowerCase();
+    if(col.name.toLowerCase().includes(q)) return true;
+    return col.figs.some(f=>f.name && f.name.toLowerCase().includes(q));
+  }
+  return true;
+}
+function sortCols(ids){
+  const arr=ids.slice();
+  if(sortMode==="name") arr.sort((a,b)=>DB.cols[a].name.localeCompare(DB.cols[b].name,"fr"));
+  else if(sortMode==="year") arr.sort((a,b)=>(DB.cols[b].year+"").localeCompare(DB.cols[a].year+""));
+  else if(sortMode==="yearold") arr.sort((a,b)=>(DB.cols[a].year+"").localeCompare(DB.cols[b].year+""));
+  else if(sortMode==="prog") arr.sort((a,b)=>{
+    const ca=DB.cols[a],cb=DB.cols[b];
+    const pa=ca.figs.length?ownedCount(ca)/ca.figs.length:0;
+    const pb=cb.figs.length?ownedCount(cb)/cb.figs.length:0;
+    return pb-pa || ca.name.localeCompare(cb.name,"fr");
+  });
+  return arr;
+}
+function ringSVG(pct,done){
+  const r=21,c=2*Math.PI*r,off=c*(1-pct/100);
+  const col=done?"#E0A95E":"#F58F7C";
+  return `<svg width="50" height="50" viewBox="0 0 50 50">
+    <circle cx="25" cy="25" r="${r}" fill="none" stroke="#FCD9CF" stroke-width="5"/>
+    <circle cx="25" cy="25" r="${r}" fill="none" stroke="${col}" stroke-width="5"
+      stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"/>
+  </svg>`;
+}
+const THEME_ID={
+  "animal-1":"🐾","animal-2":"🐾","animal-3":"🐾","animal-4":"🐾",
+  "animal-1r":"🐾","animal-2r":"🐾","animal-3r":"🐾","animal-4r":"🐾",
+  "a1-sc":"🐾","a2-sc":"🐾","a3-sc":"🐾",
+  "marine":"🐬","marine-r":"🐬","fruits":"🍓","fruits-r":"🍓",
+  "veg":"🥕","veg-r":"🥕","flowers":"🌷","flowers-r":"🌷",
+  "sweets":"🍰","sweets-r":"🍰","crown":"👑"
+};
+function themeEmoji(col){
+  if(THEME_ID[col.id]) return THEME_ID[col.id];
+  const n=col.name.toLowerCase();
+  const has=(...ks)=>ks.some(k=>n.includes(k));
+  if(has("christmas","advent","winter wonderland")) return "🎄";
+  if(has("halloween","pumpkin")) return "🎃";
+  if(has("easter")) return "🐣";
+  if(has("rainy")) return "🌧️";
+  if(has("music","musician")) return "🎵";
+  if(has("cherry blossom","hanami","sakura")) return "🌸";
+  if(has("valentine","valentin","chocolat","chocolate","kiss")) return "💝";
+  if(has("new year")) return "🎍";
+  if(has("birthday")) return "🎂";
+  if(has("summer","hawaii","beach","island","holiday","okinawa","jeju","caribbean")) return "🏝️";
+  if(has("hippers")) return "🧲";
+  if(has("dinosaur")) return "🦕";
+  if(has("cactus")) return "🌵";
+  if(has("circus")) return "🎪";
+  if(has("bug")) return "🐛";
+  if(has("creatures")) return "👾";
+  if(has("space")) return "🚀";
+  if(has("wonderland")) return "🐇";
+  if(has("sky")) return "☁️";
+  if(has("tea")) return "🍵";
+  if(has("snack","popcorn")) return "🍿";
+  if(has("dog")) return "🐶";
+  if(has("cat","meow")) return "🐱";
+  if(has("harvest")) return "🌾";
+  if(has("banana")) return "🍌";
+  if(has("pineapple")) return "🍍";
+  if(has("good luck","chinese","qixi","festival","lucky")) return "🧧";
+  if(has("new york")) return "🗽";
+  if(has("seoul")) return "🏙️";
+  if(has("artist")) return "🎨";
+  if(has("anniversary")) return "🎉";
+  if(has("master")) return "🏆";
+  if(has("bobbing head")) return "🎎";
+  if(has("t-shirt","tshirt")) return "👕";
+  if(has("plush","cuddly")) return "🧸";
+  if(has("keychain","strap")) return "🔑";
+  if(has("socks")) return "🧦";
+  if(has("home")) return "🏠";
+  if(has("candy","cake","patisserie","ladurée","laduree","pudding","dessert")) return "🧁";
+  if(has("flower")) return "🌷";
+  if(has("love","gifts","sappiness","feel so good","enjoy")) return "💛";
+  if(has("limited","special color","collab","modi","nylon","occitane","francfranc","doublemint","exception","1300k")) return "✨";
+  const fb={R:"🎀",S:"🎁",H:"🧲",C:"✨",A:"📦",M:"🎀"};
+  return fb[col.group]||"🎀";
+}
+function boxThumb(col,done){
+  const ph=Photos.get(pkeyBox(col.id));
+  if(ph){
+    return `<div class="boxthumb"><img class="boximg" src="${esc(ph)}" alt="" loading="lazy">${done?'<span class="bdone">✓</span>':''}</div>`;
+  }
+  const g=GROUPS[col.group];
+  const emo=themeEmoji(col);
+  const svg=`<svg viewBox="0 0 56 56" aria-hidden="true">
+    <ellipse cx="28" cy="51" rx="17" ry="3" fill="#000" opacity=".06"/>
+    <rect x="9" y="16" width="38" height="33" rx="8" fill="#F6EBE2" stroke="${g.bg}" stroke-width="2"/>
+    <rect x="7" y="11" width="42" height="11" rx="5.5" fill="${g.color}"/>
+    <rect x="25.5" y="11" width="5" height="11" fill="#fff" opacity=".45"/>
+    <circle cx="28" cy="35" r="12" fill="#fff" stroke="${g.bg}" stroke-width="2"/>
+  </svg>`;
+  return `<div class="boxthumb">${svg}<span class="bemo">${emo}</span>${done?'<span class="bdone">✓</span>':''}</div>`;
+}
+function card(col){
+  const o=ownedCount(col), t=col.figs.length;
+  const pct=t?Math.round(o/t*100):0; const done=t>0&&o===t;
+  const c=el("div","card"); c.dataset.done=done?"1":"0";
+  const g=GROUPS[col.group];
+  c.innerHTML=`
+    ${boxThumb(col,done)}
+    <div class="cmeta">
+      <div class="cname">${esc(col.name)}${done?'<span class="star">🌟</span>':''}</div>
+      <div class="ctags">
+        <span class="gtag" style="color:${g.color};background:${g.bg}">${g.label}</span>
+        <span class="cyear">${esc(col.year)}</span>
+        <span class="cfrac">${o}/${t}</span>
+      </div>
+      <div class="cbar"><span style="width:${t?Math.round(o/t*100):0}%"></span></div>
+    </div>
+    <div class="chev">›</div>`;
+  c.onclick=()=>openDetail(col.id);
+  return c;
+}
+function renderList(){
+  const host=$("#list"); host.innerHTML="";
+  let ids=DB.order.filter(id=>passes(DB.cols[id]));
+  $("#resCount").textContent=ids.length+" série"+(ids.length>1?"s":"");
+  if(!ids.length){
+    const e=el("div","empty");
+    e.innerHTML='<div class="e">🔍</div><p>Aucune série ne correspond.<br>Essaie un autre mot ou un autre filtre.</p>';
+    host.appendChild(e); return;
+  }
+  ids=sortCols(ids);
+  if(sortMode==="prog" && filterGroup==="ALL" && !query){
+    // group by category with headings
+    for(const g of GROUP_ORDER){
+      const sub=ids.filter(id=>DB.cols[id].group===g);
+      if(!sub.length) continue;
+      const h=el("div","ghead");
+      h.innerHTML=`<span style="color:${GROUPS[g].color}">${GROUPS[g].label}</span><span class="ln"></span><span style="color:var(--ink-faint);font-size:11px">${sub.length}</span>`;
+      host.appendChild(h);
+      for(const id of sub) host.appendChild(card(DB.cols[id]));
+    }
+  }else{
+    for(const id of ids) host.appendChild(card(DB.cols[id]));
+  }
+}
+
+/* ============ DETAIL ============ */
+let curId=null;
+function openDetail(id){
+  curId=id; const col=DB.cols[id];
+  $("#dTitle").textContent=col.name;
+  renderDetail();
+  openSheet("detail");
+}
+function renderDetail(){
+  const col=DB.cols[curId];
+  const o=ownedCount(col), t=col.figs.length, pct=t?Math.round(o/t*100):0;
+  $("#dBar").style.width=pct+"%";
+  $("#dFrac").textContent=`${o} / ${t}`;
+  const body=$("#dBody"); body.innerHTML="";
+
+  const tools=el("div","tools");
+  tools.innerHTML=`
+    <button class="tbtn" data-act="boxphoto">📷 Photo de la boîte</button>
+    <button class="tbtn" data-act="import">📝 Coller des noms</button>
+    <button class="tbtn" data-act="addfig">＋ Figurine</button>
+    <button class="tbtn" data-act="rename">✏️ Renommer la série</button>
+    <button class="tbtn warn" data-act="delete">🗑 Supprimer la série</button>`;
+  tools.querySelector('[data-act="boxphoto"]').onclick=()=>choosePhoto("box",col.id,col.name);
+  tools.querySelector('[data-act="import"]').onclick=()=>importNames(col.id);
+  tools.querySelector('[data-act="addfig"]').onclick=()=>addFigure(col.id);
+  tools.querySelector('[data-act="rename"]').onclick=()=>renameCollection(col.id);
+  tools.querySelector('[data-act="delete"]').onclick=()=>deleteCollection(col.id);
+  body.appendChild(tools);
+
+  const unnamed=col.figs.some(f=>!f.name||!f.name.trim());
+  if(unnamed){
+    const h=el("div","hint");
+    h.innerHTML='Cette série n’a pas encore tous ses noms. Coche déjà ce que tu as, puis renomme chaque case quand tu identifies la figurine (le <b>secret</b> est souvent la dernière). Astuce : « Coller des noms » remplit tout d’un coup.';
+    body.appendChild(h);
+  }
+
+  col.figs.forEach((f,idx)=>{
+    const sp=isSpecial(f.name);
+    const row=el("div","fig");
+    row.dataset.own=f.owned?"1":"0";
+    row.dataset.special=sp?"1":"0";
+    const named=f.name&&f.name.trim();
+    const emo=emojiFor(f.name);
+    const ph=Photos.get(pkeyFig(col.id,f.id));
+    let inner, cls="favatar linked";
+    if(ph){ inner=`<img class="figimg" src="${esc(ph)}" alt="">`; cls+=" hasimg"; }
+    else if(named){ inner=emo; }
+    else { inner="?"; cls+=" ph"; }
+    row.innerHTML=`
+      <button class="check">${f.owned?"✓":""}</button>
+      <button class="${cls}" data-photo aria-label="Photo">${inner}<span class="mag">📷</span></button>
+      <div class="fname">${named?esc(f.name):'<span class="ph">Figurine '+(idx+1)+'</span>'}${sp?' ✨':''}</div>
+      <button class="fedit">✏️</button>`;
+    row.querySelector(".check").onclick=(e)=>{e.stopPropagation(); toggleFig(col.id,f.id);};
+    row.querySelector(".fname").onclick=()=>toggleFig(col.id,f.id);
+    row.querySelector(".fedit").onclick=(e)=>{e.stopPropagation(); renameFig(col.id,f.id,idx);};
+    row.querySelector('[data-photo]').onclick=(e)=>{e.stopPropagation();
+      choosePhoto("fig",col.id,f.id, named?f.name:("Figurine "+(idx+1)));};
+    body.appendChild(row);
+  });
+}
+function toggleFig(cid,fid){
+  const col=DB.cols[cid]; const f=col.figs.find(x=>x.id===fid);
+  const wasDone=ownedCount(col)===col.figs.length && col.figs.length>0;
+  f.owned=!f.owned;
+  save();
+  const nowDone=ownedCount(col)===col.figs.length && col.figs.length>0;
+  renderDetail(); renderGlobal(); renderList();
+  if(nowDone && !wasDone) celebrate(col.name);
+}
+function renameFig(cid,fid,idx){
+  const col=DB.cols[cid]; const f=col.figs.find(x=>x.id===fid);
+  const v=prompt("Nom de la figurine "+(idx+1)+" :", f.name||"");
+  if(v===null) return;
+  f.name=v.trim(); save(); renderDetail(); renderList();
+}
+function addFigure(cid){
+  const col=DB.cols[cid];
+  const v=prompt("Nom de la nouvelle figurine :","");
+  if(v===null) return;
+  const nid=Math.max(0,...col.figs.map(f=>f.id))+1;
+  col.figs.push({id:nid,name:v.trim(),owned:false});
+  save(); renderDetail(); renderGlobal(); renderList();
+}
+function renameCollection(cid){
+  const col=DB.cols[cid];
+  const v=prompt("Nom de la série :",col.name);
+  if(v===null||!v.trim()) return;
+  col.name=v.trim(); save();
+  $("#dTitle").textContent=col.name; renderList();
+}
+function deleteCollection(cid){
+  const col=DB.cols[cid];
+  if(!confirm('Supprimer la série « '+col.name+' » et toutes ses coches ?')) return;
+  delete DB.cols[cid];
+  DB.order=DB.order.filter(x=>x!==cid);
+  save(); closeSheet(); renderGlobal(); renderChips(); renderList();
+  showToast("Série supprimée");
+}
+function importNames(cid){
+  const col=DB.cols[cid];
+  openForm("Coller des noms", `
+    <p class="hint">Colle la liste des figurines (une par ligne, ou séparées par des virgules).
+    Elles remplaceront les noms dans l’ordre. Idéal en copiant depuis une fiche Coleka ou le site officiel.</p>
+    <div class="field"><label>Liste des figurines</label>
+      <textarea id="impTxt" placeholder="Rabbit&#10;Lion&#10;Panda&#10;…&#10;Secret"></textarea></div>
+    <button class="primary" id="impGo">Remplir les noms</button>
+    <button class="ghost" data-close-form>Annuler</button>`);
+  $("#impGo").onclick=()=>{
+    const raw=$("#impTxt").value;
+    let names=raw.split(/\r?\n|,|;/).map(s=>s.trim()).filter(Boolean);
+    if(!names.length){ showToast("Rien à importer"); return; }
+    // resize figs if needed
+    while(col.figs.length<names.length){
+      const nid=Math.max(0,...col.figs.map(f=>f.id))+1;
+      col.figs.push({id:nid,name:"",owned:false});
+    }
+    names.forEach((n,i)=>{ if(col.figs[i]) col.figs[i].name=n; });
+    save(); closeForm(); renderDetail(); renderGlobal(); renderList();
+    showToast(names.length+" nom(s) ajouté(s)");
+  };
+}
+
+/* ============ ADD COLLECTION ============ */
+function addCollection(){
+  openForm("Nouvelle série", `
+    <div class="field"><label>Nom de la série</label>
+      <input id="ncName" placeholder="ex. Série spéciale anniversaire" autocomplete="off"></div>
+    <div class="field"><label>Année (facultatif)</label>
+      <input id="ncYear" placeholder="ex. 2026" autocomplete="off"></div>
+    <div class="field"><label>Nombre de figurines</label>
+      <input id="ncCount" type="number" inputmode="numeric" min="1" max="60" value="12"></div>
+    <div class="field"><label>Catégorie</label>
+      <select id="ncGroup">
+        <option value="R">Régulières</option>
+        <option value="S">Saisonnières</option>
+        <option value="H">Hippers</option>
+        <option value="C">Collabs & limitées</option>
+        <option value="A">Autres</option>
+        <option value="M" selected>Mes ajouts</option>
+      </select></div>
+    <button class="primary" id="ncGo">Créer la série</button>
+    <button class="ghost" data-close-form>Annuler</button>`);
+  $("#ncGo").onclick=()=>{
+    const name=$("#ncName").value.trim();
+    if(!name){ showToast("Donne un nom à la série"); return; }
+    const year=$("#ncYear").value.trim()||"—";
+    let n=parseInt($("#ncCount").value,10); if(isNaN(n)||n<1)n=1; if(n>60)n=60;
+    const group=$("#ncGroup").value;
+    const id="cust-"+Date.now().toString(36);
+    const figs=[]; for(let i=1;i<=n;i++) figs.push({id:i,name:"",owned:false});
+    DB.cols[id]={id,name,year,group,custom:true,figs};
+    DB.order.unshift(id);
+    save(); closeForm(); renderGlobal(); renderChips(); renderList();
+    showToast("Série créée");
+    openDetail(id);
+  };
+}
+
+/* ============ EXPORT / IMPORT / RESET ============ */
+function exportData(){
+  const payload={app:"sonny-angel", v:2, db:DB, photos:PH};
+  const blob=new Blob([JSON.stringify(payload)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="sonny-angel-collection-"+new Date().toISOString().slice(0,10)+".json";
+  a.click(); URL.revokeObjectURL(a.href);
+  closeSheet(); showToast("Sauvegarde exportée");
+}
+function importData(file){
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const d=JSON.parse(r.result);
+      let db=null, photos=null;
+      if(d&&d.db&&d.db.cols){ db=d.db; photos=d.photos||{}; }
+      else if(d&&d.cols&&d.order){ db=d; photos={}; }
+      if(!db) throw 0;
+      DB=db; save();
+      PH=photos||{}; savePhotos();
+      closeSheet(); renderGlobal(); renderChips(); renderList();
+      showToast("Sauvegarde importée");
+    }catch(e){ showToast("Fichier invalide"); }
+  };
+  r.readAsText(file);
+}
+function resetAll(){
+  if(!confirm("Tout réinitialiser ? Toutes tes coches, tes ajouts et tes photos seront effacés.")) return;
+  Store.del(); DB=buildDefault(); save();
+  PH={}; savePhotos();
+  closeSheet(); renderGlobal(); renderChips(); renderList();
+  showToast("Réinitialisé");
+}
+
+/* ============ SHEETS ============ */
+function openSheet(which){
+  $("#scrim").dataset.open="1";
+  $("#"+which).dataset.open="1";
+  document.body.style.overflow="hidden";
+}
+function closeSheet(){
+  $("#scrim").dataset.open="0";
+  document.querySelectorAll(".sheet").forEach(s=>s.dataset.open="0");
+  document.body.style.overflow="";
+  curId=null;
+}
+function openForm(title,html){
+  $("#fTitle").textContent=title;
+  $("#fBody").innerHTML=html;
+  $("#fBody").querySelectorAll("[data-close-form]").forEach(b=>b.onclick=closeForm);
+  // raise form above whatever is open
+  $("#scrim").dataset.open="1";
+  $("#form").dataset.open="1";
+  document.body.style.overflow="hidden";
+}
+function closeForm(){
+  $("#form").dataset.open="0";
+  if(curId){ /* keep detail open underneath */ }
+  else { $("#scrim").dataset.open = (document.querySelector('.sheet[data-open="1"]')?"1":"0"); }
+}
+
+/* ============ CELEBRATE ============ */
+function celebrate(name){
+  const host=$("#confetti");
+  const emo=["✨","🎀","🌟","💛","🧸","🍓","⭐"];
+  for(let i=0;i<26;i++){
+    const s=el("span","cf");
+    s.textContent=emo[i%emo.length];
+    s.style.left=Math.random()*100+"vw";
+    s.style.animationDelay=(Math.random()*.3)+"s";
+    s.style.fontSize=(15+Math.random()*16)+"px";
+    host.appendChild(s);
+    setTimeout(()=>s.remove(),1900);
+  }
+  showToast("🌟 « "+name+" » complète !");
+}
+let toastT=null;
+function showToast(msg){
+  const t=$("#toast"); t.textContent=msg; t.dataset.on="1";
+  clearTimeout(toastT); toastT=setTimeout(()=>t.dataset.on="0",2000);
+}
+function esc(s){ return (s+"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function openPhoto(colName,figName){
+  const clean=(colName||"").replace(/\s*\(REFINE\)/i,"").trim();
+  const q=encodeURIComponent("Sonny Angel "+clean+" "+figName+" figure");
+  window.open("https://www.google.com/search?tbm=isch&q="+q,"_blank","noopener");
+}
+function openBoxPhoto(colName){
+  const clean=(colName||"").replace(/\s*\(REFINE\)/i,"").trim();
+  const q=encodeURIComponent("Sonny Angel "+clean+" blind box");
+  window.open("https://www.google.com/search?tbm=isch&q="+q,"_blank","noopener");
+}
+function openLightbox(src){ $("#lbImg").src=src; $("#lightbox").dataset.on="1"; }
+function closeLightbox(){ $("#lightbox").dataset.on="0"; $("#lbImg").src=""; }
+function choosePhoto(kind,colId,p1,p2){
+  const isBox=kind==="box";
+  const key=isBox?pkeyBox(colId):pkeyFig(colId,p1);
+  const label=isBox?DB.cols[colId].name:(p2||"Figurine");
+  const colName=DB.cols[colId].name;
+  const existing=Photos.get(key);
+  const refTxt=isBox?"Trouver une photo de boîte":"Trouver une photo de référence";
+  openForm(isBox?"Photo de la boîte":("Photo · "+label), `
+    <p class="hint">Ajoute une photo depuis le téléphone (marche hors-ligne) ou colle l'URL d'une image trouvée sur le web. Astuce : « ${refTxt} » ouvre une recherche pour copier l'adresse de l'image.</p>
+    <div class="mlist">
+      <div class="mrow" data-o="file"><span class="mi">📁</span> Choisir / prendre une photo</div>
+      <div class="mrow" data-o="url"><span class="mi">🔗</span> Coller une URL d'image</div>
+      <div class="mrow" data-o="ref"><span class="mi">🔍</span> ${refTxt}</div>
+      ${existing?'<div class="mrow" data-o="view"><span class="mi">👁️</span> Voir en grand</div><div class="mrow warn" data-o="del"><span class="mi">🗑</span> Retirer la photo</div>':''}
+    </div>
+    <input type="file" accept="image/*" id="pf" hidden>
+    <button class="ghost" data-close-form>Fermer</button>`);
+  const refresh=()=>{ closeForm(); renderList(); renderGlobal(); if(curId) renderDetail(); };
+  const body=$("#fBody");
+  body.querySelector('[data-o="file"]').onclick=()=>$("#pf").click();
+  $("#pf").onchange=async(e)=>{
+    const file=e.target.files[0]; if(!file) return;
+    try{
+      const data=await downscale(file,360,0.72);
+      if(Photos.set(key,data)){ showToast("Photo ajoutée"); refresh(); }
+      else showToast("Mémoire pleine — exporte une sauvegarde");
+    }catch(err){ showToast("Photo illisible"); }
+    e.target.value="";
+  };
+  body.querySelector('[data-o="url"]').onclick=()=>{
+    const cur=(typeof existing==="string"&&/^https?:/i.test(existing))?existing:"";
+    const u=prompt("Colle l'URL de l'image (https://…) :",cur);
+    if(u===null) return; const v=u.trim();
+    if(!/^https?:\/\//i.test(v)){ showToast("URL invalide"); return; }
+    if(Photos.set(key,v)){ showToast("Photo ajoutée"); refresh(); } else showToast("Mémoire pleine");
+  };
+  body.querySelector('[data-o="ref"]').onclick=()=> isBox?openBoxPhoto(colName):openPhoto(colName,label);
+  if(existing){
+    body.querySelector('[data-o="view"]').onclick=()=>openLightbox(existing);
+    body.querySelector('[data-o="del"]').onclick=()=>{ Photos.del(key); showToast("Photo retirée"); refresh(); };
+  }
+}
+
+/* ============ EVENTS ============ */
+$("#search").addEventListener("input",e=>{query=e.target.value.trim(); renderList();});
+$("#sort").addEventListener("change",e=>{sortMode=e.target.value; renderList();});
+$("#addCol").onclick=addCollection;
+$("#menuBtn").onclick=()=>openSheet("menu");
+$("#scrim").onclick=()=>{ 
+  if($("#form").dataset.open==="1"){ closeForm(); }
+  else closeSheet();
+};
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeSheet);
+$("#mExport").onclick=exportData;
+$("#mImport").onclick=()=>$("#importFile").click();
+$("#importFile").onchange=e=>{ if(e.target.files[0]) importData(e.target.files[0]); };
+$("#mReset").onclick=resetAll;
+$("#lbClose").onclick=closeLightbox;
+$("#lightbox").onclick=(e)=>{ if(e.target.id==="lightbox") closeLightbox(); };
+
+/* ============ INIT ============ */
+loadPhotos();
+DB=load();
+renderGlobal(); renderChips(); renderList();
+</script>
+</body>
+</html>
